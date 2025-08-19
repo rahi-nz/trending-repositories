@@ -17,11 +17,12 @@ export function saveStarredRepos(repos: Repo[]) {
 export function getStarredReposPage(
   starredRepo: Repo[],
   page: number,
+  language: string,
   pageSize = PAGE_SIZE
 ): { starredRepoSlice: Repo[]; hasMoreStarred: boolean; totalCount: number } {
-  const filtered = starredRepo.sort(
-    (a, b) => b.stargazers_count - a.stargazers_count
-  )
+  const filtered = starredRepo
+    .filter((r) => !language || r.language === language)
+    .sort((a, b) => b.stargazers_count - a.stargazers_count)
 
   const start = (page - 1) * pageSize
   const end = page * pageSize

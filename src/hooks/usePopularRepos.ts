@@ -21,7 +21,8 @@ type UsePopularReposResult = {
 export function usePopularRepos(
   page: number,
   shouldFetch: boolean,
-  pageSize = PAGE_SIZE
+  pageSize = PAGE_SIZE,
+  language: string
 ): UsePopularReposResult {
   const [repos, setRepos] = useState<Repo[]>([])
   const [loading, setLoading] = useState(false)
@@ -37,7 +38,7 @@ export function usePopularRepos(
     const controller = new AbortController()
     setLoading(true)
     const params = new URLSearchParams({
-      q: 'stars:>1',
+      q: `stars:>1${language ? ` language:${language}` : ''}`,
       sort: 'stars',
       order: 'desc',
       page: String(Math.max(1, page)),
@@ -75,7 +76,7 @@ export function usePopularRepos(
     })()
 
     return () => controller.abort()
-  }, [page, pageSize, shouldFetch])
+  }, [language, page, pageSize, shouldFetch])
 
   return { repos, loading, error, totalCount, hasMoreRepo }
 }

@@ -1,0 +1,45 @@
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin: 1rem 0;
+  align-items: center;
+}
+
+.filters__group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+}
+
+.filters__group--inline {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filters__label {
+  font-weight: 500;
+}
+
+.filters__select {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.9rem;
+}
+
+.filters__checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.filters__checkbox-input {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.9rem;
+}
+
+.filters__checkbox-text {
+  font-weight: 500;
+}

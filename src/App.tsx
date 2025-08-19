@@ -47,6 +47,7 @@ function TableEmpty({
 
 export default function App() {
   const [page, setPage] = useState(getPageFromUrl)
+  const [language, setLanguage] = useState('')
   const [starredAll, setStarredAll] = useState<Repo[]>(loadAllStarredRepos)
   const [showStarredOnly, setShowStarredOnly] = useState(false)
 
@@ -55,11 +56,11 @@ export default function App() {
     loading,
     error,
     hasMoreRepo,
-  } = usePopularRepos(page, !showStarredOnly, PAGE_SIZE)
+  } = usePopularRepos(page, !showStarredOnly, PAGE_SIZE, language)
 
   const { starredRepoSlice: starredRepos, hasMoreStarred } = useMemo(
-    () => getStarredReposPage(starredAll, page, PAGE_SIZE),
-    [starredAll, page]
+    () => getStarredReposPage(starredAll, page, language, PAGE_SIZE),
+    [starredAll, page, language]
   )
 
   const onToggleStar = (repo: Repo) => {
@@ -83,6 +84,11 @@ export default function App() {
     if (repo) {
       onToggleStar(repo)
     }
+  }
+
+  const handleLanguageChange = (lang: string) => {
+    setLanguage(lang)
+    setPage(1)
   }
 
   useEffect(() => {
@@ -123,6 +129,8 @@ export default function App() {
         <Filters
           showStarredOnly={showStarredOnly}
           onToggleShowStarred={handleToggleShowStarred}
+          selectedLanguage={language}
+          onLanguageChange={handleLanguageChange}
         />
         <section className="table-section">
           <h2>Repository list</h2>
