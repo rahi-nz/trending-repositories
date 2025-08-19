@@ -3,9 +3,15 @@ import './RepoTable.css'
 
 type RepoTableProps = {
   repos: Repo[]
+  starredIds: number[]
+  onToggleStar: (id: number) => void
 }
 
-export default function RepoTable({ repos }: RepoTableProps) {
+export default function RepoTable({
+  repos,
+  starredIds,
+  onToggleStar,
+}: RepoTableProps) {
   return (
     <table className="repo-table">
       <thead className="repo-table__head">
@@ -29,6 +35,7 @@ export default function RepoTable({ repos }: RepoTableProps) {
       </thead>
       <tbody className="repo-table__body">
         {repos.map((repo) => {
+          const isStarred = starredIds.includes(repo.id)
           return (
             <tr key={repo.id} className="repo-table__row">
               <td className="repo-table__cell repo-table__cell--repo">
@@ -49,11 +56,17 @@ export default function RepoTable({ repos }: RepoTableProps) {
                 {repo.stargazers_count.toLocaleString()}
               </td>
               <td className="repo-table__cell">
-                <button type="button" className="repo-table__star-btn">
+                <button
+                  type="button"
+                  className={`repo-table__star-btn ${isStarred ? 'repo-table__star-btn--starred' : ''}`}
+                  onClick={() => onToggleStar(repo.id)}
+                >
                   <span className="repo-table__star-icon" aria-hidden="true">
-                    ☆
+                    {isStarred ? '★' : '☆'}
                   </span>
-                  <span className="repo-table__star-label">Star</span>
+                  <span className="repo-table__star-label">
+                    {isStarred ? 'Starred' : 'Star'}
+                  </span>
                 </button>
               </td>
             </tr>

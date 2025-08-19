@@ -20,6 +20,7 @@ type UsePopularReposResult = {
 
 export function usePopularRepos(
   page: number,
+  shouldFetch: boolean,
   pageSize = PAGE_SIZE
 ): UsePopularReposResult {
   const [repos, setRepos] = useState<Repo[]>([])
@@ -29,6 +30,10 @@ export function usePopularRepos(
   const [hasMoreRepo, setHasMoreRepo] = useState(false)
 
   useEffect(() => {
+    if (!shouldFetch) {
+      setLoading(false)
+      return
+    }
     const controller = new AbortController()
     setLoading(true)
     const params = new URLSearchParams({
@@ -70,7 +75,7 @@ export function usePopularRepos(
     })()
 
     return () => controller.abort()
-  }, [page, pageSize])
+  }, [page, pageSize, shouldFetch])
 
   return { repos, loading, error, totalCount, hasMoreRepo }
 }
