@@ -30,7 +30,7 @@ export function usePopularRepos(
 
   useEffect(() => {
     const controller = new AbortController()
-
+    setLoading(true)
     const params = new URLSearchParams({
       q: 'stars:>1',
       sort: 'stars',
@@ -42,9 +42,6 @@ export function usePopularRepos(
     const url = `https://api.github.com/search/repositories?${params.toString()}`
 
     ;(async () => {
-      setLoading(true)
-      setError(null)
-
       try {
         const res = await fetch(url, { signal: controller.signal })
         if (!res.ok) {
@@ -58,6 +55,8 @@ export function usePopularRepos(
         setRepos(items)
         setTotalCount(total)
         setHasMoreRepo(page * pageSize < total)
+        setLoading(false)
+        setError(null)
       } catch (err: unknown) {
         if (err instanceof DOMException && err.name === 'AbortError') return
         const msg =
@@ -66,7 +65,6 @@ export function usePopularRepos(
         setRepos([])
         setTotalCount(0)
         setHasMoreRepo(false)
-      } finally {
         setLoading(false)
       }
     })()

@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { usePopularRepos } from './hooks/usePopularRepos'
 import RepoTable from './components/RepoTable/RepoTable'
 import { PAGE_SIZE } from './constants/config'
 import './App.css'
+import Pagination from './components/Pagination/Pagination'
+import { getPageFromUrl } from './utils/getPageFromUrl'
 
 function TableLoading() {
   return (
@@ -28,14 +30,25 @@ function TableEmpty() {
 }
 
 export default function App() {
-  const [page] = useState(1)
+  const [page, setPage] = useState(getPageFromUrl)
 
-  const { repos, loading, error } = usePopularRepos(page, PAGE_SIZE)
+  const { repos, loading, error, hasMoreRepo } = usePopularRepos(
+    page,
+    PAGE_SIZE
+  )
+  console.log('loading', loading)
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    params.set('page', String(page))
+    const url = `${window.location.pathname}?${params.toString()}`
+    window.history.replaceState(null, '', url)
+  }, [page])
 
   const renderContent = () => {
     if (loading) return <TableLoading />
     if (error) return <TableError message={error} />
-    if (repos.length === 0) return <TableEmpty />
+    if (repos.length === 0 && !loading) return <TableEmpty />
     return <RepoTable repos={repos} />
   }
 
@@ -50,6 +63,9 @@ export default function App() {
         <section className="table-section">
           <h2>Repository list</h2>
           <div className="table-section__wrapper">{renderContent()}</div>
+          {!loading && !error && (
+            <Pagination page={page} setPage={setPage} hasMore={hasMoreRepo} />
+          )}
         </section>
       </main>
     </div>

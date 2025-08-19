@@ -1,0 +1,30 @@
+.pagination {
+  margin: 1rem auto 0;
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.pagination__btn {
+  padding: 0.5rem 0.9rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #f8f8f8;
+  cursor: pointer;
+}
+
+.pagination__btn:hover:not(:disabled) {
+  background: #f0f0f0;
+}
+
+.pagination__btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.pagination__indicator {
+  min-width: 5ch;
+  text-align: center;
+  font-weight: 500;
+}
