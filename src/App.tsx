@@ -1,35 +1,57 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { usePopularRepos } from './hooks/usePopularRepos'
+import RepoTable from './components/RepoTable/RepoTable'
+import { PAGE_SIZE } from './constants/config'
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
-
+function TableLoading() {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className="table-section__message table-section__message--loading">
+      Loading…
+    </div>
   )
 }
 
-export default App
+function TableError({ message }: { message: string }) {
+  return (
+    <div
+      className="table-section__message table-section__message--error"
+      role="alert"
+    >
+      Error: {message}
+    </div>
+  )
+}
+
+function TableEmpty() {
+  return <p>No repositories found.</p>
+}
+
+export default function App() {
+  const [page] = useState(1)
+
+  const { repos, loading, error } = usePopularRepos(page, PAGE_SIZE)
+
+  const renderContent = () => {
+    if (loading) return <TableLoading />
+    if (error) return <TableError message={error} />
+    if (repos.length === 0) return <TableEmpty />
+    return <RepoTable repos={repos} />
+  }
+
+  return (
+    <div className="container">
+      <header className="page-header">
+        <h1 className="page-header__title">Most Popular GitHub Repositories</h1>
+        <p className="page-header__meta">Sorted by total stars</p>
+      </header>
+
+      <main>
+        <section className="table-section">
+          <h2>Repository list</h2>
+          <div className="table-section__wrapper">{renderContent()}</div>
+        </section>
+      </main>
+    </div>
+  )
+}
